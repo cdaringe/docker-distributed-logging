@@ -5,7 +5,7 @@ time.sleep(5) # hack to wait for fluentd to come up.  need to use health check e
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('kind-n-sweet')
-h = handler.FluentHandler('app.follow', host='fluentd', port=24224)
+h = handler.FluentHandler('kind-n-sweet', host='fluentd', port=24224)
 logger.addHandler(h)
 logger.info({
   'from': 'userA',
