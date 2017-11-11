@@ -14,3 +14,4 @@ services:
     image: kind-n-sweet
     depends_on:
       - fluentd
+    restart: always
