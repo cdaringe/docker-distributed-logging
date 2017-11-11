@@ -1,0 +1,17 @@
+version: '3'
+services:
+  fluentd:
+    image: fluent/fluentd:v0.12.40
+    volumes:
+      - "${PWD}:/fluentd/log"
+  loud-n-rad:
+    build: ./loud-n-rad
+    image: loud-n-rad
+    depends_on:
+      - fluentd
+  kind-n-sweet:
+    build: ./kind-n-sweet
+    image: kind-n-sweet
+    depends_on:
+      - fluentd
+    restart: always
