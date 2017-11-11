@@ -1,7 +1,7 @@
 import logging
 from fluent import asynchandler as handler
 import time
-time.sleep(20) # hack to wait for fluentd to come up.  need to use health check entry point instead
+time.sleep(5) # hack to wait for fluentd to come up.  need to use health check entry point instead
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('kind-n-sweet')
