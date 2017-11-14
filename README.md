@@ -1,5 +1,6 @@
 # docker-distributed-logging
-POA to explore distributing logging mechanisms in the docker ecosystem
+
+POC project to explore distributing logging mechanisms in the docker ecosystem
 
 ## examples
 
