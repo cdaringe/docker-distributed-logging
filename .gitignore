@@ -1,2 +1,3 @@
 node_modules
 fluentd/data.log
+*.log

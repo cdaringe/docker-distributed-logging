@@ -47,7 +47,7 @@ function getLogLevel () {
 function kickoff () {
   var msg = `${getLoud()} ${getRad()}`
   logger[getLogLevel()](msg)
-  setTimeout(kickoff, Math.random() * 5000)
+  // setTimeout(kickoff, Math.random() * 5000)
 }
 
 logger.info('it\'s go time.')
