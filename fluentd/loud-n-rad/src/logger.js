@@ -1,15 +1,19 @@
 'use strict'
 
 var winston = require('winston')
-var config = {
-  host: process.env.LOG_HOST || 'fluentd',
-  port: process.env.LOG_HOST_PORT || 24224
-}
-var fluentTransport = require('fluent-logger').support.winstonTransport()
+
 var logger = new (winston.Logger)({
   transports: [
-    new fluentTransport('loud-n-rad', config),
-    new (winston.transports.Console)()
+    new (winston.transports.Console)({
+      formatter: function (info) {
+        const { level, message } = info
+        return JSON.stringify(Object.assign(
+          {},
+          info.meta,
+          { level, message, timestamp: (new Date()).toISOString() })
+        )
+      }
+    })
   ]
 })
 
