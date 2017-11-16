@@ -3,15 +3,27 @@ services:
   fluentd:
     image: fluent/fluentd:v0.12.40
     volumes:
-      - "${PWD}:/fluentd/log"
-  loud-n-rad:
-    build: ./loud-n-rad
-    image: loud-n-rad
-    depends_on:
-      - fluentd
+      - "${PWD}:/fluentd/etc/"
+      - "${PWD}/log:/fluentd/log"
+    environment:
+      - FLUENTD_CONF=fluentd.conf
+    ports:
+      - "24224:24224"
+
   kind-n-sweet:
     build: ./kind-n-sweet
     image: kind-n-sweet
     depends_on:
       - fluentd
     restart: always
+    logging:
+      driver: fluentd
+
+  loud-n-rad:
+    build: ./loud-n-rad
+    image: loud-n-rad
+    depends_on:
+      - fluentd
+    restart: always
+    logging:
+      driver: fluentd

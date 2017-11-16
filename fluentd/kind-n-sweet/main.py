@@ -1,16 +1,27 @@
 import logging
-from fluent import asynchandler as handler
+import os
 import time
-time.sleep(5) # hack to wait for fluentd to come up.  need to use health check entry point instead
+import atexit
+import datetime
+from fluent import handler
+from pythonjsonlogger import jsonlogger
 
-logging.basicConfig(level=logging.INFO)
+level = getattr(logging, os.getenv('LOG_LEVEL', 'DEBUG'))
+log_host = os.getenv('LOG_HOST', 'fluentd')
+log_port = 24224
+
+
+logging.basicConfig(level=level)
 logger = logging.getLogger('kind-n-sweet')
-h = handler.FluentHandler('kind-n-sweet', host='fluentd', port=24224)
-logger.addHandler(h)
-logger.info({
-  'from': 'userA',
-  'to': 'userB'
-})
-logger.info('{"from": "userC", "to": "userD"}')
-logger.info("This log entry will be logged with the additional key: 'message'.")
-h.close()
+
+# if we used the fluent-logger
+# h = handler.FluentHandler('kind-n-sweet', host=log_host, port=log_port, verbose=True)
+# logger.addHandler(h)
+
+# using a JSON logger
+logHandler = logging.StreamHandler()
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger.addHandler(logHandler)
+
+logger.info('greetings, all: ' + str(datetime.datetime.now()))

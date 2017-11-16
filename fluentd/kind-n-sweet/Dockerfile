@@ -1,5 +1,5 @@
 FROM python
+RUN pip install fluent-logger python-json-logger
 RUN mkdir /app
 COPY main.py /app/
-RUN pip install fluent-logger
 CMD ["python", "/app/main.py"]
