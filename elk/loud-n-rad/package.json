@@ -1,0 +1,19 @@
+{
+  "name": "loud-n-rad",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fluent-logger": "^2.6.0",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "perish": "^1.0.1"
+  }
+}
