@@ -1,0 +1,57 @@
+version: '3'
+services:
+  fluentd:
+    build: fluentd
+    volumes:
+      - "${PWD}:/fluentd/etc/"
+      - "${PWD}/log:/fluentd/log"
+    environment:
+      - FLUENTD_CONF=fluentd.conf
+      - FLUENTD_OPTS='-vv'
+    ports:
+      - "24224:24224"
+    depends_on:
+      - elasticsearch
+
+  loud-n-rad:
+    build: ./loud-n-rad
+    image: loud-n-rad
+    volumes:
+      - "${PWD}/loud-n-rad/src:/app/src"
+    depends_on:
+      - fluentd
+    logging:
+      driver: fluentd
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.3
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+  # http://localhost:5601/app/kibana#/visualize/edit/AV_GyWTko7olMa_2A6IB?_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now-15m,mode:quick,to:now))&_a=(filters:!(),linked:!f,query:(match_all:()),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(),schema:metric,type:count),(enabled:!t,id:'2',params:(customInterval:'2h',customLabel:Minute,extended_bounds:(),field:timestamp,interval:m,min_doc_count:1),schema:segment,type:date_histogram),(enabled:!t,id:'3',params:(customLabel:'Log%20Level',field:level.keyword,order:desc,orderBy:'1',size:5),schema:group,type:terms)),listeners:(),params:(addLegend:!t,addTimeMarker:!f,addTooltip:!t,categoryAxes:!((id:CategoryAxis-1,labels:(show:!t,truncate:100),position:bottom,scale:(type:linear),show:!t,style:(),title:(text:Minute),type:category)),grid:(categoryLines:!f,style:(color:%23eee)),legendPosition:right,seriesParams:!((data:(id:'1',label:Count),drawLinesBetweenPoints:!t,mode:normal,show:true,showCircles:!t,type:line,valueAxis:ValueAxis-1)),times:!(),type:line,valueAxes:!((id:ValueAxis-1,labels:(filter:!f,rotate:0,show:!t,truncate:100),name:LeftAxis-1,position:left,scale:(mode:normal,type:linear),show:!t,style:(),title:(text:Count),type:value))),title:'Log%20Volume%20by%20Minute',type:line))
+  # http://localhost:5601/app/kibana#/discover/AV_GzZabo7olMa_2A6JY?_g=(refreshInterval%3A(display%3AOff%2Cpause%3A!f%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cmode%3Aquick%2Cto%3Anow))
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.6.3
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+# logstash:
+#   build: logstash/
+#   volumes:
+#     - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+#     - ./logstash/pipeline:/usr/share/logstash/pipeline
+#   ports:
+#     - "5000:5000"
+#   environment:
+#     LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+#   networks:
+#     - elk
+#   depends_on:
+#     - elasticsearch

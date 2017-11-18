@@ -45,8 +45,9 @@ function getLogLevel () {
   return levels[index]
 }
 function kickoff () {
-  var msg = `${getLoud()} ${getRad()}`
+  var msg = `${getLoud()} - NO RADS` //  ${getRad()}
   logger[getLogLevel()](msg)
+  console.log('!!!TOTALLY NOT JSON!!!')
   setTimeout(kickoff, Math.random() * 5000)
 }
 
